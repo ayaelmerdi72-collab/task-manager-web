@@ -1,17 +1,11 @@
-
-// Tâches affichées au démarrage de l'application
-const tasks = [
-  { title: "Préparer le cours DevOps", done: true },
-  { title: "Corriger les TP", done: false },
-  { title: "Préparer la séance 2", done: false },
-  { title: "Apprendre Git et GitHub", done: false }
-];
+// Tâches affichées au démarrage
+const tasks = defaultTasks();
 
 const list = document.getElementById("task-list");
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
 
-// Affiche toutes les tâches dans la page
+// Affiche toutes les tâches
 function render() {
   list.innerHTML = "";
 
@@ -23,7 +17,7 @@ function render() {
     box.checked = task.done;
 
     box.addEventListener("change", function () {
-      tasks[index].done = box.checked;
+      toggleTask(tasks, index);
       render();
     });
 
@@ -34,23 +28,26 @@ function render() {
       label.className = "done";
     }
 
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Supprimer";
+
+    deleteButton.addEventListener("click", function () {
+      removeTask(tasks, index);
+      render();
+    });
+
     item.appendChild(box);
     item.appendChild(label);
+    item.appendChild(deleteButton);
     list.appendChild(item);
   });
 }
 
-// Ajoute une tâche lorsque le formulaire est envoyé
+// Ajoute une tâche
 form.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const title = input.value.trim();
-
-  if (title === "") {
-    return;
-  }
-
-  tasks.push({ title: title, done: false });
+  addTask(tasks, input.value);
   input.value = "";
   render();
 });
